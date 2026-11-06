@@ -3,9 +3,9 @@ package resol.Gabrielukf.modelo;
 import java.time.LocalDate;
 
 public class Venta {
-    private int id;
+    private long id;
     private LocalDate fecha;
-    private int idVideojuego;
+    private long idVideojuego;
     private String nombreVideojuego; // solo para listados (JOIN)
     private int cantidad;
     private int descuento;           // porcentaje
@@ -13,7 +13,7 @@ public class Venta {
 
     public Venta() { }
 
-    public Venta(int id, LocalDate fecha, int idVideojuego, String nombreVideojuego,
+    public Venta(long id, LocalDate fecha, long idVideojuego, String nombreVideojuego,
                  int cantidad, int descuento, double total) {
         this.id = id;
         this.fecha = fecha;
@@ -24,12 +24,12 @@ public class Venta {
         this.total = total;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-    public int getIdVideojuego() { return idVideojuego; }
-    public void setIdVideojuego(int idVideojuego) { this.idVideojuego = idVideojuego; }
+    public long getIdVideojuego() { return idVideojuego; }
+    public void setIdVideojuego(long idVideojuego) { this.idVideojuego = idVideojuego; }
     public String getNombreVideojuego() { return nombreVideojuego; }
     public void setNombreVideojuego(String n) { this.nombreVideojuego = n; }
     public int getCantidad() { return cantidad; }

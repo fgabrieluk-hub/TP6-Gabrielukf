@@ -1,7 +1,7 @@
 package resol.Gabrielukf.modelo;
 
 public class Videojuego {
-    private int id;
+    private long id;
     private String nombre;
     private String genero;
     private double precio;
@@ -11,7 +11,7 @@ public class Videojuego {
 
     public Videojuego() { }
 
-    public Videojuego(int id, String nombre, String genero, double precio,
+    public Videojuego(long id, String nombre, String genero, double precio,
                       int unidadesDisponibles, int nivelReposicion, int suspendido) {
         this.id = id;
         this.nombre = nombre;
@@ -22,8 +22,8 @@ public class Videojuego {
         this.suspendido = suspendido;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getGenero() { return genero; }

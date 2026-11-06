@@ -1,7 +1,7 @@
 package resol.Gabrielukf.excepciones;
 
 public class VideojuegoNoEncontradoException extends Exception {
-    public VideojuegoNoEncontradoException(int id) {
+    public VideojuegoNoEncontradoException(long id) {
         super("No existe un videojuego con ID " + id);
     }
 }
