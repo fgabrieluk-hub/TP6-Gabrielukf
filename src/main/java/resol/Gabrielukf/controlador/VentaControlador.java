@@ -1,20 +1,23 @@
 package resol.Gabrielukf.controlador;
 
-import resol.Gabrielukf.excepciones.ReglaNegocioException;
-import resol.Gabrielukf.excepciones.VentaInvalidaException;
-import resol.Gabrielukf.excepciones.VideojuegoNoEncontradoException;
-import resol.Gabrielukf.modelo.Venta;
-import resol.Gabrielukf.modelo.VentaModelo;
-import resol.Gabrielukf.vista.MenuVista;
-import resol.Gabrielukf.vista.VentaVista;
-
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+import resol.Gabrielukf.dao.VentaDao;
+import resol.Gabrielukf.dao.VentaDaoImpl;
+import resol.Gabrielukf.dto.VentaDto;
+import resol.Gabrielukf.excepciones.ReglaNegocioException;
+import resol.Gabrielukf.excepciones.VentaInvalidaException;
+import resol.Gabrielukf.excepciones.VideojuegoNoEncontradoException;
+import resol.Gabrielukf.mapper.VentaMapper;
+import resol.Gabrielukf.modelo.Venta;
+import resol.Gabrielukf.vista.MenuVista;
+import resol.Gabrielukf.vista.VentaVista;
+
 public class VentaControlador {
-    private final VentaModelo modelo = new VentaModelo();
+    // Se depende de la interfaz, no de la implementación concreta
+    private final VentaDao ventaDao = new VentaDaoImpl();
     private final VentaVista vista = new VentaVista();
     private final MenuVista menu = new MenuVista();
 
@@ -24,20 +27,23 @@ public class VentaControlador {
             opcion = menu.mostrarMenuVentas();
             try {
                 switch (opcion) {
-                    case 1 -> vista.mostrarVentas(modelo.listar());
-                    case 2 -> vista.mostrarVenta(modelo.buscarPorId(vista.pedirIdVenta()));
+                    case 1 -> vista.mostrarVentas(VentaMapper.toDtoList(ventaDao.listarVentas()));
+                    case 2 -> vista.mostrarVenta(
+                            VentaMapper.toDto(ventaDao.obtenerPorId(vista.pedirIdVenta())));
                     case 3 -> {
-                        int idVideojuego = vista.pedirIdVideojuego();
-                        int cantidad = vista.pedirCantidad();
-                        LocalDate fecha = vista.pedirFecha();
-                        Venta v = modelo.registrar(idVideojuego, fecha, cantidad);
+                        Venta venta = new Venta();
+                        venta.setIdVideojuego(vista.pedirIdVideojuego());
+                        venta.setCantidad(vista.pedirCantidad());
+                        venta.setFecha(vista.pedirFecha());
+                        Venta registrada = ventaDao.registrarVenta(venta);
                         vista.mostrarMensaje("Venta registrada correctamente:");
-                        vista.mostrarVenta(v);
+                        vista.mostrarVenta(VentaMapper.toDto(registrada));
                     }
-                    case 4 -> vista.mostrarVentas(modelo.buscarPorVideojuego(vista.pedirIdVideojuego()));
+                    case 4 -> vista.mostrarVentas(VentaMapper.toDtoList(
+                            ventaDao.listarPorVideojuego(vista.pedirIdVideojuego())));
                     case 5 -> {
-                        List<Venta> ventas = modelo.ventasDelMesActual();
-                        vista.mostrarReporteMensual(YearMonth.now(), ventas, VentaModelo.sumarTotales(ventas));
+                        List<VentaDto> ventas = VentaMapper.toDtoList(ventaDao.listarVentasDelMes());
+                        vista.mostrarReporteMensual(YearMonth.now(), ventas, sumarTotales(ventas));
                     }
                     case 0 -> { }
                     default -> vista.mostrarError("Opción inválida.");
@@ -48,5 +54,13 @@ public class VentaControlador {
                 vista.mostrarError("Error de base de datos: " + e.getMessage());
             }
         } while (opcion != 0);
+    }
+
+    private double sumarTotales(List<VentaDto> ventas) {
+        double suma = 0;
+        for (VentaDto v : ventas) {
+            suma += v.getTotal();
+        }
+        return suma;
     }
 }

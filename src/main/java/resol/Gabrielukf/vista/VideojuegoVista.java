@@ -1,40 +1,41 @@
 package resol.Gabrielukf.vista;
 
-import resol.Gabrielukf.modelo.Videojuego;
+import resol.Gabrielukf.dto.VideojuegoDto;
+import resol.Gabrielukf.dto.VideojuegoFormDto;
 
 import java.util.List;
 
+/** Trabaja exclusivamente con DTO. */
 public class VideojuegoVista {
 
     public int pedirId() {
         return Consola.leerEntero("ID del videojuego: ");
     }
 
-    /** Pide los datos y devuelve un Videojuego sin ID (sin validar: eso lo hace el modelo). */
-    public Videojuego pedirDatos() {
-        Videojuego v = new Videojuego();
-        v.setNombre(Consola.leerTexto("Nombre: "));
-        v.setGenero(Consola.leerTexto("Género: "));
-        v.setPrecio(Consola.leerDecimal("Precio: "));
-        v.setUnidadesDisponibles(Consola.leerEntero("Unidades disponibles: "));
-        v.setNivelReposicion(Consola.leerEntero("Nivel de reposición: "));
-        v.setSuspendido(Consola.leerEntero("¿Disponible para la venta? (1 = sí, 0 = no): "));
-        return v;
+    /** Pide los datos por consola y los devuelve en un DTO (la validación la hace el DAO). */
+    public VideojuegoFormDto pedirDatos() {
+        VideojuegoFormDto f = new VideojuegoFormDto();
+        f.setNombre(Consola.leerTexto("Nombre: "));
+        f.setGenero(Consola.leerTexto("Género: "));
+        f.setPrecio(Consola.leerDecimal("Precio: "));
+        f.setUnidadesDisponibles(Consola.leerEntero("Unidades disponibles: "));
+        f.setNivelReposicion(Consola.leerEntero("Nivel de reposición: "));
+        f.setSuspendido(Consola.leerEntero("¿Disponible para la venta? (1 = sí, 0 = no): "));
+        return f;
     }
 
-    public void mostrarVideojuego(Videojuego v) {
-        System.out.printf("ID: %d | %s | %s | $%.2f | Stock: %d | Reposición: %d | %s%n",
-                v.getId(), v.getNombre(), v.getGenero(), v.getPrecio(),
-                v.getUnidadesDisponibles(), v.getNivelReposicion(),
-                v.getSuspendido() == 1 ? "Disponible" : "Suspendido");
+    public void mostrarVideojuego(VideojuegoDto v) {
+        System.out.printf("ID: %d | %s | $%.2f | Necesita reposición: %s%n",
+                v.getId(), v.getNombre(), v.getPrecio(),
+                v.isNecesitaReposicion() ? "Sí" : "No");
     }
 
-    public void mostrarVideojuegos(List<Videojuego> lista) {
+    public void mostrarVideojuegos(List<VideojuegoDto> lista) {
         if (lista.isEmpty()) {
             System.out.println("No hay videojuegos para mostrar.");
             return;
         }
-        for (Videojuego v : lista) {
+        for (VideojuegoDto v : lista) {
             mostrarVideojuego(v);
         }
     }
